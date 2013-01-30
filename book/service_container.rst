@@ -188,21 +188,19 @@
 
 .. tip::
 
-    この節では、サービスコンフィギュレーション・ファイルを\ *リソース*\ として参照します。
-    Symfony2 では、ほとんどのサービスコンフィギュレーションリソースは YAML、XML、PHP といったファイルですが、
-    データベースや外部の Web サービスなど、どこからでもコンフィギュレーションを読み込めます。
+    この節では、サービスコンフィギュレーション・ファイルを\ *リソース*\ と呼びます。
+    ほとんどのサービスコンフィギュレーションリソースは(YAML、XML、PHP といった)ファイルですが、Symfony2 はとてもフレキシブルなので
+    どこからでもコンフィギュレーションを読み込むことができます。(データベースや外部の Web サービスでさえ)
+    ということをここでは強調しておきます。
 
-The service container is built using a single configuration resource
-(``app/config/config.yml`` by default). All other service configuration
-(including the core Symfony2 and third-party bundle configuration) must
-be imported from inside this file in one way or another. This gives you absolute
-flexibility over the services in your application.
+サービスコンテナは１つのコンフィギュレーションリソース(デフォルトでは ``app/config/config.yml``) を使って組み立てられます。
+(symfony2コアやサードパーティバンドルを含む)他の全てのサービスコンフィギュレーションはこのファイルから何らかの方法でインポートされなければなりません。
+これによりあなたはアプリケーションにおいてサービスを超えたとても柔軟な設定が行えます。
 
-External service configuration can be imported in two different ways. First,
-we'll talk about the method that you'll use most commonly in your application:
-the ``imports`` directive. In the following section, we'll introduce the
-second method, which is the flexible and preferred method for importing service
-configuration from third-party bundles.
+外部のサービスコンフィギュレーションは２つの方法で読み込むことができます。
+1つめは、 ``imports`` ディレクティブというアプリケーションで通常使われる方法です。
+以下の節では、２つ目の方法を紹介します。それは柔軟で、サードパーティバンドルからサービスコンフィギュレーションを
+インポートするときに推奨される方法です。
 
 .. index::
    single: Service Container; imports
@@ -212,15 +210,14 @@ configuration from third-party bundles.
 ``imports`` を使ってコンフィギュレーションをインポートする
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-So far, we've placed our ``my_mailer`` service container definition directly
-in the application configuration file (e.g. ``app/config/config.yml``). Of
-course, since the ``Mailer`` class itself lives inside the ``AcmeHelloBundle``,
-it makes more sense to put the ``my_mailer`` container definition inside the
-bundle as well.
+これまで、私たちは ``my_mailer`` のサービスコンテナの定義を( ``app/config/config.yml`` といった)
+アプリケーションコンフィギュレーションファイルに直接記述していました。もちろん、
+ ``Mailer`` クラス自身は ``AcmeHelloBundle`` 内でも存在しますが、 ``my_mailer`` コンテナの定義を
+ バンドル内に入れた方がより良いでしょう。
 
-First, move the ``my_mailer`` container definition into a new container resource
-file inside ``AcmeHelloBundle``. If the ``Resources`` or ``Resources/config``
-directories don't exist, create them.
+初めに、 ``my_mailer`` コンテナ定義を ``AcmeHelloBundle``内の新しいコンテナリソースファイルに
+移しましょう。もし、 ``Resources`` や ``Resources/config`` ディレクトリが存在していなければ作成して下さい。
+
 
 .. configuration-block::
 
@@ -263,10 +260,8 @@ directories don't exist, create them.
             array('%my_mailer.transport%')
         ));
 
-The definition itself hasn't changed, only its location. Of course the service
-container doesn't know about the new resource file. Fortunately, we can
-easily import the resource file using the ``imports`` key in the application
-configuration.
+定義自体は変わっておらず、配置場所だけが変わっています。もちろんサービスコンテはは新しいリソースファイルの存在を知りません。
+幸い ``imports`` キーを使うことでリソースファイルを簡単に読み込むことができます。
 
 .. configuration-block::
 
@@ -289,13 +284,10 @@ configuration.
         // app/config/config.php
         $this->import('@AcmeHelloBundle/Resources/config/services.php');
 
-The ``imports`` directive allows your application to include service container
-configuration resources from any other location (most commonly from bundles).
-The ``resource`` location, for files, is the absolute path to the resource
-file. The special ``@AcmeHello`` syntax resolves the directory path of
-the ``AcmeHelloBundle`` bundle. This helps you specify the path to the resource
-without worrying later if you move the ``AcmeHelloBundle`` to a different
-directory.
+ ``imports`` ディレクティブのお陰で、アプリケーションはどんな場所でも（通常bundleから） サービスコンテナコンフィギュレーションリソースを読み込む事ができます。
+ ``リソース`` の場所は, ファイルの場合, リソースファイルへの絶対パスになります。
+特別な構文 ``@AcmeHello`` は ``AcmeHelloBundle`` のディレクトリパスを解決します。
+これにより ``AcmeHelloBundle`` を後から異なるディレクトリに移動するかもしれないという心配をせずに、リソースファイルパスを記述できます。
 
 .. index::
    single: Service Container; Extension configuration
@@ -305,31 +297,22 @@ directory.
 コンテナエクステンションでコンフィギュレーションをインポートする
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When developing in Symfony2, you'll most commonly use the ``imports`` directive
-to import container configuration from the bundles you've created specifically
-for your application. Third-party bundle container configuration, including
-Symfony2 core services, are usually loaded using another method that's more
-flexible and easy to configure in your application.
+Symfony2で開発するとき、あなたが作ったバンドルからコンテナコンフィギュレーションをインポートするために
+通常 ``imports`` ディレクティブを使うでしょう。
+サードパーティーのコンテナコンフィギュレーションは、Symfony2のコアバンドルも含みますが、
+通常、より柔軟でのアプリケーションを組み立てるのに簡単な方法を使い読み込みを行なっています。
 
-Here's how it works. Internally, each bundle defines its services very much
-like we've seen so far. Namely, a bundle uses one or more configuration
-resource files (usually XML) to specify the parameters and services for that
-bundle. However, instead of importing each of these resources directly from
-your application configuration using the ``imports`` directive, you can simply
-invoke a *service container extension* inside the bundle that does the work for
-you. A service container extension is a PHP class created by the bundle author
-to accomplish two things:
+これが仕組みです。内部で、それぞれのバンドルは自身のサービスをこれまで見てきたのと非常によく似ている方法で
+定義しています。
+すなわち、バンドルは、パラメータやそのバンドルの向けのサービスを記述するための１つ以上のコンフィギュレーションリソースファイル（普通はXML）を使います。
+しかしながら、それら全てのリソースを ``imports`` ディレクティブを使ってあなたのアプリケーションコンフィギュレーションから直接インポートすることなく、あなたは仕事をするバンドル内で *サービスコンテナエクステンション* を起動することができます。
+サービスコンテナエクステンションはバンドル作者が次の２つのことを成し遂げるために作ったPHPクラスです。
 
-* import all service container resources needed to configure the services for
-  the bundle;
+* バンドルのサービスを構築する為に必要な全てのコンテナリソースをインポートする
 
-* provide semantic, straightforward configuration so that the bundle can
-  be configured without interacting with the flat parameters of the bundle's
-  service container configuration.
+* セマンティックを提供する、つまり簡単なコンフィギュレーションでバンドルのサービスコンフィギュレーションのフラットなパラメータとやり取りすること無くバンドルの組立ができるように
 
-In other words, a service container extension configures the services for
-a bundle on your behalf. And as we'll see in a moment, the extension provides
-a sensible, high-level interface for configuring the bundle.
+言い換えれば、サービスコンテナコンフィギュレーションはあなたに代わって（あなたのために）バンドル向けのサービスを構築します。
 
 Take the ``FrameworkBundle`` - the core Symfony2 framework bundle - as an
 example. The presence of the following code in your application configuration
