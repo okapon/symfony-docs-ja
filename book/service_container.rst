@@ -690,11 +690,8 @@ YAMLの場合 ``@my_mailer`` シンタックスを使うことでコンテナは
 
 .. note::
 
-    The approaches presented in this section are called "constructor injection"
-    and "setter injection". The Symfony2 service container also supports
-    "property injection".
-    この節で紹介した方法はコンストラクターによる注入(コンストラクターインジェクション)
-    セッターによる注入(セッターインジェクション)と呼ばれるものです。Symfony2のサービス
+    この節ではコンストラクターによる注入(コンストラクターインジェクション)とセッター
+    による注入(セッターインジェクション)を紹介しました。Symfony2のサービス
     コンテナはプロパティによる注入(プロパティインジェクション)もサポートしています。
 
 参照を任意にする
